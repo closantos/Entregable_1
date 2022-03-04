@@ -1,0 +1,128 @@
+[
+    {
+        "id": "5de1e8d.06b9598",
+        "type": "tab",
+        "label": "Flow 3",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "e3bfd50a.39d85",
+        "type": "http request",
+        "z": "5de1e8d.06b9598",
+        "name": "Balance de energía eléctrica",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://apidatos.ree.es/es/datos/balance/balance-electrico?start_date=2022-02-24T00:00&end_date=2022-02-24T23:59&time_trunc=day",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 300,
+        "y": 180,
+        "wires": [
+            [
+                "d27810af.c92898"
+            ]
+        ]
+    },
+    {
+        "id": "35c6c5d1.a64fea",
+        "type": "inject",
+        "z": "5de1e8d.06b9598",
+        "name": "Run",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 90,
+        "y": 180,
+        "wires": [
+            [
+                "e3bfd50a.39d85"
+            ]
+        ]
+    },
+    {
+        "id": "d27810af.c92898",
+        "type": "json",
+        "z": "5de1e8d.06b9598",
+        "name": "Convert JSON",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 540,
+        "y": 180,
+        "wires": [
+            [
+                "f4f453a5.4923c",
+                "db080399.e4fee8"
+            ]
+        ]
+    },
+    {
+        "id": "f4f453a5.4923c",
+        "type": "debug",
+        "z": "5de1e8d.06b9598",
+        "name": "Salida de datos balance energía eléctrica",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "db080399.e4fee8",
+        "type": "function",
+        "z": "5de1e8d.06b9598",
+        "name": "Valor id de energía eólica",
+        "func": "variable = msg.payload\nmsg.payload = variable.included[0].attributes.content[1].id\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 670,
+        "y": 300,
+        "wires": [
+            [
+                "9a363740.89eee"
+            ]
+        ]
+    },
+    {
+        "id": "9a363740.89eee",
+        "type": "debug",
+        "z": "5de1e8d.06b9598",
+        "name": "Resultado función",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 910,
+        "y": 300,
+        "wires": []
+    }
+]

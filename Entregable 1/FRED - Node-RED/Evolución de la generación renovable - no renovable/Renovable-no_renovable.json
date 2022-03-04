@@ -1,0 +1,128 @@
+[
+    {
+        "id": "49eef8fb.700518",
+        "type": "tab",
+        "label": "Flow 4",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "393663b1.6d920c",
+        "type": "http request",
+        "z": "49eef8fb.700518",
+        "name": "Evolución renovable-no renovable",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://apidatos.ree.es/es/datos/generacion/evolucion-renovable-no-renovable?start_date=2022-02-01T00:00&end_date=2022-02-24T23:59&time_trunc=day",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 280,
+        "y": 160,
+        "wires": [
+            [
+                "25d2f162.1473ce"
+            ]
+        ]
+    },
+    {
+        "id": "69554cbe.171064",
+        "type": "inject",
+        "z": "49eef8fb.700518",
+        "name": "Run",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 70,
+        "y": 160,
+        "wires": [
+            [
+                "393663b1.6d920c"
+            ]
+        ]
+    },
+    {
+        "id": "25d2f162.1473ce",
+        "type": "json",
+        "z": "49eef8fb.700518",
+        "name": "Convert JSON",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 520,
+        "y": 160,
+        "wires": [
+            [
+                "9d4f4227.787b68",
+                "9a29493.aa3abb8"
+            ]
+        ]
+    },
+    {
+        "id": "9d4f4227.787b68",
+        "type": "debug",
+        "z": "49eef8fb.700518",
+        "name": "Salida de datos energía renovable y no renovable",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "9a29493.aa3abb8",
+        "type": "function",
+        "z": "49eef8fb.700518",
+        "name": "Energía renovable o no renovable?",
+        "func": "variable = msg.payload;\nvar ren = 0, no_ren = 0;\nfor(var i = 0; i < 24; i++){\n    var renovable = variable.included[0].attributes.values[i]\n    var no_renovable = variable.included[1].attributes.values[i]\n  if(renovable > no_renovable){\n      ren++;\n  }else{\n      no_ren++;\n  }\n}\n\nif(ren > no_ren){\n    msg.payload = \"La energía renovable se ha usado más\"\n}else{\n    msg.payload = \"La energía no renovable se ha usado más\"\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 620,
+        "y": 280,
+        "wires": [
+            [
+                "76dea5a5.11501c"
+            ]
+        ]
+    },
+    {
+        "id": "76dea5a5.11501c",
+        "type": "debug",
+        "z": "49eef8fb.700518",
+        "name": "Resultado función",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 280,
+        "wires": []
+    }
+]
